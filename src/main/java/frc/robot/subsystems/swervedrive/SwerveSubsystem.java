@@ -76,7 +76,8 @@ public class SwerveSubsystem extends SubsystemBase
    */
   public SwerveSubsystem(File directory)
   {
-    boolean blueAlliance = false;
+    // Properly detect alliance color for starting pose
+    boolean blueAlliance = !isRedAlliance();
     Pose2d startingPose = blueAlliance ? new Pose2d(new Translation2d(Meter.of(1),
                                                                       Meter.of(4)),
                                                     Rotation2d.fromDegrees(0))
@@ -501,6 +502,18 @@ public class SwerveSubsystem extends SubsystemBase
   public void drive(ChassisSpeeds velocity)
   {
     swerveDrive.drive(velocity);
+  }
+
+  /**
+   * Drive the robot given a robot oriented velocity command.
+   *
+   * @param velocity Robot oriented velocity supplier.
+   */
+  public Command driveRobotOriented(Supplier<ChassisSpeeds> velocity)
+  {
+    return run(() -> {
+      swerveDrive.drive(velocity.get());
+    });
   }
 
 
