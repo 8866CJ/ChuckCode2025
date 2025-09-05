@@ -53,7 +53,7 @@ private final Shooter Shooter = new Shooter();
                                                                 () -> driverXbox.getLeftX() * 1)
                                                             .withControllerRotationAxis(driverXbox::getRightX)
                                                             .deadband(OperatorConstants.DEADBAND)
-                                                            .scaleTranslation(0.8)
+                                                            .scaleTranslation(0.6)
                                                             .allianceRelativeControl(true);
 
   /**
@@ -66,8 +66,8 @@ private final Shooter Shooter = new Shooter();
   /**
    * Clone's the angular velocity input stream and converts it to a robotRelative input stream.
    */
-  SwerveInputStream driveRobotOriented = driveAngularVelocity.copy().robotRelative(true)
-                                                             .allianceRelativeControl(false);
+  // SwerveInputStream driveRobotOriented = driveAngularVelocity.copy().robotRelative(false)
+  //                                                            .allianceRelativeControl(true);
 
   SwerveInputStream driveAngularVelocityKeyboard = SwerveInputStream.of(drivebase.getSwerveDrive(),
                                                                         () -> -driverXbox.getLeftY(),
@@ -75,7 +75,7 @@ private final Shooter Shooter = new Shooter();
                                                                     .withControllerRotationAxis(() -> driverXbox.getRawAxis(
                                                                         2))
                                                                     .deadband(OperatorConstants.DEADBAND)
-                                                                    .scaleTranslation(0.8)
+                                                                    .scaleTranslation(0.6)
                                                                     .allianceRelativeControl(true);
   // Derive the heading axis with math!
   SwerveInputStream driveDirectAngleKeyboard     = driveAngularVelocityKeyboard.copy()
@@ -120,7 +120,7 @@ private final Shooter Shooter = new Shooter();
   {
     Command driveFieldOrientedDirectAngle      = drivebase.driveFieldOriented(driveDirectAngle);
     Command driveFieldOrientedAnglularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);
-    Command driveRobotOrientedAngularVelocity  = drivebase.driveFieldOriented(driveRobotOriented);
+    // Command driveRobotOrientedAngularVelocity  = drivebase.driveFieldOriented(driveRobotOriented);
     Command driveSetpointGen = drivebase.driveWithSetpointGeneratorFieldRelative(
         driveDirectAngle);
     Command driveFieldOrientedDirectAngleKeyboard      = drivebase.driveFieldOriented(driveDirectAngleKeyboard);
@@ -138,28 +138,28 @@ private final Shooter Shooter = new Shooter();
 
     if (Robot.isSimulation())
     {
-      Pose2d target = new Pose2d(new Translation2d(1, 4),
-                                 Rotation2d.fromDegrees(90));
-      //drivebase.getSwerveDrive().field.getObject("targetPose").setPose(target);
-      driveDirectAngleKeyboard.driveToPose(() -> target,
-                                           new ProfiledPIDController(5,
-                                                                     0,
-                                                                     0,
-                                                                     new Constraints(5, 2)),
-                                           new ProfiledPIDController(5,
-                                                                     0,
-                                                                     0,
-                                                                     new Constraints(Units.degreesToRadians(360),
-                                                                                     Units.degreesToRadians(180))
-                                           ));
-      driverXbox.a().onTrue(Commands.runOnce(() -> drivebase.resetOdometry(new Pose2d(3, 3, new Rotation2d()))));
-      driverXbox.button(1).whileTrue(drivebase.sysIdDriveMotorCommand());
-      driverXbox.button(2).whileTrue(Commands.runEnd(() -> driveDirectAngleKeyboard.driveToPoseEnabled(true),
-                                                     () -> driveDirectAngleKeyboard.driveToPoseEnabled(false)));
+      // Pose2d target = new Pose2d(new Translation2d(1, 4),
+      //                            Rotation2d.fromDegrees(90));
+      // //drivebase.getSwerveDrive().field.getObject("targetPose").setPose(target);
+      // driveDirectAngleKeyboard.driveToPose(() -> target,
+      //                                      new ProfiledPIDController(5,
+      //                                                                0,
+      //                                                                0,
+      //                                                                new Constraints(5, 2)),
+      //                                      new ProfiledPIDController(5,
+      //                                                                0,
+      //                                                                0,
+      //                                                                new Constraints(Units.degreesToRadians(360),
+      //                                                                                Units.degreesToRadians(180))
+      //                                      ));
+      // driverXbox.a().onTrue(Commands.runOnce(() -> drivebase.resetOdometry(new Pose2d(3, 3, new Rotation2d()))));
+      // driverXbox.button(1).whileTrue(drivebase.sysIdDriveMotorCommand());
+      // driverXbox.button(2).whileTrue(Commands.runEnd(() -> driveDirectAngleKeyboard.driveToPoseEnabled(true),
+      //                                                () -> driveDirectAngleKeyboard.driveToPoseEnabled(false)));
 
-      driverXbox.b().whileTrue(Intake.intakeCommand(0.5, 0.1)).whileFalse(Intake.intakeCommand(0, 0));
-      driverXbox.rightBumper().whileTrue(Pivot.pivotCommand(0.2)).whileFalse(Pivot.pivotCommand(0));
-      driverXbox.leftBumper().whileTrue(Shooter.shooterCommand(0.6)).whileFalse(Shooter.shooterCommand(0));
+      // driverXbox.b().whileTrue(Intake.intakeCommand(0.5, 0.1)).whileFalse(Intake.intakeCommand(0, 0));
+      // driverXbox.rightBumper().whileTrue(Pivot.pivotCommand(0.2)).whileFalse(Pivot.pivotCommand(0));
+      // driverXbox.leftBumper().whileTrue(Shooter.shooterCommand(0.6)).whileFalse(Shooter.shooterCommand(0));
 //      driverXbox.b().whileTrue(
 //          drivebase.driveToPose(
 //              new Pose2d(new Translation2d(4, 4), Rotation2d.fromDegrees(0)))
@@ -170,20 +170,20 @@ private final Shooter Shooter = new Shooter();
     {
       drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity); // Overrides drive command above!
 
-      driverXbox.x().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
-      driverXbox.y().whileTrue(drivebase.driveToDistanceCommand(1.0, 0.2));
+      // driverXbox.x().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
+      // driverXbox.y().whileTrue(drivebase.driveToDistanceCommand(1.0, 0.2));
       driverXbox.a().onTrue((Commands.runOnce(drivebase::zeroGyro)));
-      driverXbox.back().whileTrue(drivebase.centerModulesCommand());
-      driverXbox.leftBumper().onTrue(Commands.none());
-      driverXbox.rightBumper().onTrue(Commands.none());
+      // driverXbox.back().whileTrue(drivebase.centerModulesCommand());
+      // driverXbox.leftBumper().onTrue(Commands.none());
+      // driverXbox.rightBumper().onTrue(Commands.none());
     } else
     {
       driverXbox.a().onTrue((Commands.runOnce(drivebase::zeroGyro)));
-      driverXbox.x().onTrue(Commands.runOnce(drivebase::addFakeVisionReading));
-      driverXbox.start().whileTrue(Commands.none());
-      driverXbox.back().whileTrue(Commands.none());
+      // driverXbox.x().onTrue(Commands.runOnce(drivebase::addFakeVisionReading));
+      // driverXbox.start().whileTrue(Commands.none());
+      // driverXbox.back().whileTrue(Commands.none());
       driverXbox.leftBumper().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
-      driverXbox.rightBumper().onTrue(Commands.none());
+      // driverXbox.rightBumper().onTrue(Commands.none());
     }
 
   }
