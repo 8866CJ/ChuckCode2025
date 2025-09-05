@@ -503,6 +503,18 @@ public class SwerveSubsystem extends SubsystemBase
     swerveDrive.drive(velocity);
   }
 
+  /**
+   * Drive the robot given a robot oriented velocity command.
+   *
+   * @param velocity Robot oriented velocity supplier.
+   */
+  public Command driveRobotOriented(Supplier<ChassisSpeeds> velocity)
+  {
+    return run(() -> {
+      swerveDrive.drive(velocity.get());
+    });
+  }
+
 
   /**
    * Get the swerve drive kinematics object.
